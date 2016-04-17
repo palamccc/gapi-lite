@@ -1,0 +1,19 @@
+{
+  "name": "gapi-lite",
+  "version": "1.0.0",
+  "description": "Light Weight Google API Client",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/palamccc/gapi-lite.git"
+  },
+  "author": "palam.c@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/palamccc/gapi-lite/issues"
+  },
+  "homepage": "https://github.com/palamccc/gapi-lite#readme"
+}
