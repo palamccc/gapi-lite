@@ -40,8 +40,25 @@ GoogleAPI.prototype.getToken = function getToken() {
   }
 };
 
-function ServerError(status) { this.message = `Server Error ${status}`; this.status = status; }
+function ServerError(status, message) {
+  this.status = status;
+  this.message = message || `Server Error ${status}`;
+}
 ServerError.prototype = Object.create(Error.prototype);
+
+function rejectWithMessage(resp) {
+  const contentType = resp.headers.get('content-type');
+  const isJSON = /^application\/json\b/.test(contentType);
+  if (isJSON) {
+    return resp.json()
+      .then(ret => {
+        const msg = ret.error && ret.error.message;
+        return P.reject(new ServerError(resp.status, msg));
+      });
+  } else {
+    return P.reject(new ServerError(resp.status));
+  }
+}
 
 GoogleAPI.prototype.request = function request(url, opts) {
   return P.resolve(
@@ -54,7 +71,7 @@ GoogleAPI.prototype.request = function request(url, opts) {
         return fetch(url, fopts);
       })
       .then(resp => resp.status >= 400
-          ? P.reject(new ServerError(resp.status))
+          ? rejectWithMessage(resp)
           : resp.json()));
 };
 
