@@ -100,7 +100,7 @@ GoogleAPI.prototype.retryPost = function post(url, body, retryCount) {
       tries += 1;
       self.post(url, body)
         .then(resolve)
-        .catch(() => tries < retryCount, reschedule)
+        .catch(err => tries < retryCount && err.status !== 404, reschedule)
         .catch(reject);
     }
     doIt();
