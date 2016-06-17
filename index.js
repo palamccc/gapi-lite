@@ -79,14 +79,18 @@ GoogleAPI.prototype.get = function get(url) {
   return this.request(url);
 };
 
-GoogleAPI.prototype.post = function post(url, body) {
+GoogleAPI.prototype.ipost = function ipost(method, url, body) {
   const opts = {
-    method: 'POST',
+    method,
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   };
   return this.request(url, opts);
 };
+
+GoogleAPI.prototype.post = function post(url, body) { return this.ipost('POST', url, body); };
+GoogleAPI.prototype.put = function put(url, body) { return this.ipost('PUT', url, body); };
+GoogleAPI.prototype.del = function del(url, body) { return this.ipost('DELETE', url, body); };
 
 GoogleAPI.prototype.retryPost = function post(url, body, retryCount) {
   const self = this;
@@ -98,7 +102,7 @@ GoogleAPI.prototype.retryPost = function post(url, body, retryCount) {
     }
     function doIt() {
       tries += 1;
-      self.post(url, body)
+      self.ipost('POST', url, body)
         .then(resolve)
         .catch(err => tries < retryCount && err.status !== 404, reschedule)
         .catch(reject);
